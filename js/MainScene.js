@@ -5,6 +5,8 @@ var enemy;
 var enemy2;
 let score = 0
 var scoreTxt;
+let dead = false;
+let keySpace;
 //seems like theres three ways to declare a variable in 3 ways
 //1. let x...
 //2. var x...
@@ -44,8 +46,6 @@ export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Cla
         //stats.setDataEnabled();
 
         //stats.data.set('score', 0);
-
-        player.physics.add.collider(player, enemy);
         //this.physics.add.collider(player, enemy2);
 
         scoreTxt = this.add.text(350, 270, 'Score: 0', {font: '32px pressStart', fill: '#00ff00'});
@@ -63,6 +63,31 @@ export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Cla
 
         enemy2 = this.physics.add.sprite(100, 100, 'hellKnight'); 
         enemy2.setCollideWorldBounds(true);
+
+        this.physics.add.collider(
+            player,
+            enemy,
+            function(player, enemy){
+                if(player.body.touching && enemy.body.touching){
+                    dead = true;
+                    //player.destroy();
+                    scoreTxt.setText('You Are Dead! Score: ' + score);
+                }
+            }
+        );
+
+        this.physics.add.collider(
+            player,
+            enemy2,
+            function(player, enemy2){
+                if(player.body.touching && enemy2.body.touching){
+                    dead = true;
+                    scoreTxt.setText('You Are Dead! Score: ' + score);
+                }
+            }
+        );
+
+        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     
         //in this situation player variable is local.
         //var player = this.add.image (500, 500, 'paladin');
@@ -76,7 +101,6 @@ export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Cla
     //learning from scratch, good directions.
     update()
     {
-        
         player.setVelocity(0);
         enemy.setVelocity(0);
         enemy2.setVelocity(0);
@@ -98,9 +122,16 @@ export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Cla
             player.setVelocityY(300);
         }
 
-        score += 1;
-        scoreTxt.setText('Score: ' + score);
-        
+        if(dead == false){
+            score += 1;
+            scoreTxt.setText('Score: ' + score);
+        }
+
+        if(dead == true && keySpace.isDown){
+            this.registry.destroy();
+            this.events.off();
+            this.scene.restart();
+        }
 
         this.enemyFollows();
     }
