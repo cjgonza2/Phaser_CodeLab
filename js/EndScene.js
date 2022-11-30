@@ -1,7 +1,7 @@
-import EndScene from './EndScene.js'; //in order to switch between scenes,
-//variables                           //if the scene is in another script
-var cursors;                          //You need to make sure to import
-var player;                           //the script that has said scene
+
+//variables
+var cursors;
+var player;
 var enemy;
 var enemy2;
 let score = 0
@@ -13,11 +13,13 @@ let keySpace;
 //2. var x...
 //3. const x...
 
-
-export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Class.
-    constructor (){//Whenever we make a class we need a constructor?
-        super('MainScene');
+export default class EndScene extends Phaser.Scene{
+    constructor(){
+        super('EndScene');
     }
+
+    
+
 
     //phaser scenes have a few handy functions
     //1. Preload - gets called before scene loads.
@@ -62,9 +64,6 @@ export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Cla
         enemy = this.physics.add.sprite(600, 500, 'hellKnight');
         enemy.setCollideWorldBounds(true);
 
-        enemy2 = this.physics.add.sprite(100, 100, 'hellKnight'); 
-        enemy2.setCollideWorldBounds(true);
-
         this.physics.add.collider(
             player,
             enemy,
@@ -73,18 +72,6 @@ export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Cla
                     dead = true;
                     //player.destroy();
                     scoreTxt.setText('You Are Dead! Score: ' + score);
-                }
-            }
-        );
-
-        this.physics.add.collider(
-            player,
-            enemy2,
-            function(player, enemy2){
-                if(player.body.touching && enemy2.body.touching){
-                    dead = true;
-                    //this.scene.start('EndScene');
-                    //scoreTxt.setText('You Are Dead! Score: ' + score);
                 }
             }
         );
@@ -123,34 +110,5 @@ export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Cla
         {
             player.setVelocityY(300);
         }
-
-        if(dead == false){
-            score += 1;
-            scoreTxt.setText('Score: ' + score);
-        }
-
-        //if(dead == true && keySpace.isDown){
-           // this.registry.destroy();
-            //this.events.off();
-            //this.scene.restart();
-        //}
-
-        if(dead == true){
-            this.scene.start('EndScene');
-        }
-
-        this.enemyFollows();
-    }
-
-    enemyFollows()
-    {
-
-        //.moveToObject is a handy function to move an object to another
-        //seems good for having an enemy 
-        this.physics.moveToObject(enemy, player, 150);
-        this.physics.moveToObject(enemy2, player, 50)
-       //if i've already declared a variable
-       //ie var enemy. I can't just say this.enemy, 
-       //since in that case it's not defined!
     }
 }
