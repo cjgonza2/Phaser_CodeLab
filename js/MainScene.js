@@ -154,3 +154,5 @@ export default class MainScene extends Phaser.Scene{ //inherits Phaser.SCene Cla
        //since in that case it's not defined!
     }
 }
+
+
